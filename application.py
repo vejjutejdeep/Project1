@@ -25,11 +25,10 @@ db = scoped_session(sessionmaker(bind=engine))
 def index():
     return "Project 1: TODO"
 
-@app.route("/register")
+@app.route("/register", methods=["GET", "POST"])
 def register():
-    return render_template("register.html")
-
-@app.route("/more", methods=["POST"])
-def more():
-    name = request.form.get("username")
-    return render_template("data.html", name=name)
+    if request.method=="GET":
+        return render_template("register.html")
+    else:
+        name = request.form.get("username")
+        return render_template("data.html", name=name)

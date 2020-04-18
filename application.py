@@ -8,7 +8,7 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 from userdata import *
 
 
-
+app = Flask(__name__)
 # Check for environment variable
 if not os.getenv("DATABASE_URL"):
     raise RuntimeError("DATABASE_URL is not set")
@@ -21,7 +21,7 @@ Session(app)
 # Set up database
 # engine = create_engine(os.getenv("DATABASE_URL"))
 # db = scoped_session(sessionmaker(bind=engine))
-app = Flask(__name__)
+
 app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db.init_app(app)
@@ -43,3 +43,8 @@ def register():
         db.session.add(user)
         db.session.commit()
         return render_template("data.html", name=name)
+
+@app.route("/admin")
+def userdetails():
+    user = userdata.query.order_by(userdata.time).all()
+    return render_template("userdetails.html", users = user)

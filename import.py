@@ -11,13 +11,10 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db.init_app(app)
 
 def main():
-    firstline = True
     f = open("books.csv")
     reader = csv.reader(f)
+    next(reader)
     for number, name, author, year in reader:
-        if firstline:
-            firstline = False
-            continue
         print(number)
         years = int(year)
         number = str(number)

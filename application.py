@@ -1,7 +1,7 @@
 import os
 import datetime
 
-from flask import Flask, session,render_template, request
+from flask import Flask, session,render_template, request,flash, redirect, url_for
 from flask_session import Session
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
@@ -9,6 +9,7 @@ from userdata import *
 
 
 app = Flask(__name__)
+app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 # Check for environment variable
 if not os.getenv("DATABASE_URL"):
     raise RuntimeError("DATABASE_URL is not set")
@@ -49,9 +50,34 @@ def userdetails():
     user = userdata.query.order_by(userdata.time).all()
     return render_template("userdetails.html", users = user)
 
-@app.route("/auth", methods=["post"])
-def login():
-    name = request.form.get("username")
+@app.route("/auth", methods=["post"]) 
+def auth():
+    uname = request.form.get("username")
     password = request.form.get("password")
-    
+    queryres = userdata.query.filter_by(username = uname).first()
+    if queryres is not None:
+        print(password == queryres.password)
+        print(uname == queryres.password)
+        if password == queryres.password and uname == queryres.username:
+            session["user"] = uname
+            return redirect(url_for("userhome"))
+        else :
+            flash("The entered passowrd of the account doesnot match.")
+            return render_template("register.html")
+    else:
+        flash("Your logging credentials are invalid.")
+        return render_template("register.html")
 
+@app.route("/logout", methods=["POST"])
+def logout():
+    session.pop("user",None)
+    return render_template("register.html")
+
+@app.route("/userhome")
+def userhome():
+    if "user" in session:
+        user = session["user"]
+        return render_template("home.html")
+    else:
+        flash("Login with the credentails.")
+        return render_template("register.html")

@@ -48,3 +48,10 @@ def register():
 def userdetails():
     user = userdata.query.order_by(userdata.time).all()
     return render_template("userdetails.html", users = user)
+
+@app.route("/auth", methods=["post"])
+def login():
+    name = request.form.get("username")
+    password = request.form.get("password")
+    
+

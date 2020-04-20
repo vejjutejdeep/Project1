@@ -9,7 +9,7 @@ db = SQLAlchemy()
 class books(db.Model):
     __tablename__="books"
     ISBN_number = db.Column(db.String, primary_key = True)
-    name = db.Column(db.String, nullable = False, unique = True)
+    name = db.Column(db.String, nullable = False)
     author = db.Column(db.String, nullable = False)
     publication_year = db.Column(db.Integer, nullable = False)
 

@@ -5,7 +5,8 @@
 {% endblock %}
 
 {% block body %}
-    <form action="{{ url_for('logout') }}" method="post">
+    <!-- <form action="{{ url_for('logout') }}" method="post">
         <button class="btn btn-primary" type="submit"> logout</button>
-    </form>
+    </form> -->
+    <a href="{{url_for('logout') }}">logout</a>
 {% endblock %}

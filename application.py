@@ -50,7 +50,7 @@ def userdetails():
     user = userdata.query.order_by(userdata.time).all()
     return render_template("userdetails.html", users = user)
 
-@app.route("/auth", methods=["post"]) 
+@app.route("/auth", methods =["POST"]) 
 def auth():
     uname = request.form.get("username")
     password = request.form.get("password")
@@ -68,7 +68,7 @@ def auth():
         flash("Your logging credentials are invalid.")
         return render_template("register.html")
 
-@app.route("/logout", methods=["POST"])
+@app.route("/logout")
 def logout():
     session.pop("user",None)
     return render_template("register.html")

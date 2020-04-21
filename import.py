@@ -1,3 +1,4 @@
+import csv
 import os
 
 from flask import Flask, render_template, request
@@ -10,7 +11,16 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db.init_app(app)
 
 def main():
-    db.create_all()
+    f = open("books.csv")
+    reader = csv.reader(f)
+    next(reader)
+    for number, name, author, year in reader:
+        print(number)
+        years = int(year)
+        number = str(number)
+        book = books(ISBN_number = number, name = name, author = author, publication_year = years)
+        db.session.add(book)
+    db.session.commit()
 
 if __name__ == "__main__":
     with app.app_context():

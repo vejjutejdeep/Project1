@@ -40,10 +40,19 @@ def register():
         name = request.form.get("username")
         password =request.form.get("password")
         time = datetime.now()
-        user = userdata(username = name, password = password, time = time)
-        db.session.add(user)
-        db.session.commit()
-        return render_template("data.html", name=name)
+        queryres = userdata.query.filter_by(username = name).first()
+        if queryres is None:
+            user = userdata(username = name, password = password, time = time)
+            db.session.add(user)
+            db.session.commit()
+            session["user"] = name
+            if "user" in session:
+                user = session["user"]
+                flash("The user is successfully registered.")
+                return render_template("home.html")
+        else:
+            flash("The user is already registered")
+            return render_template("register.html")
 
 @app.route("/admin")
 def userdetails():
@@ -56,8 +65,6 @@ def auth():
     password = request.form.get("password")
     queryres = userdata.query.filter_by(username = uname).first()
     if queryres is not None:
-        print(password == queryres.password)
-        print(uname == queryres.password)
         if password == queryres.password and uname == queryres.username:
             session["user"] = uname
             return redirect(url_for("userhome"))

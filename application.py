@@ -6,6 +6,7 @@ from flask_session import Session
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 from userdata import *
+from model import *
 
 
 app = Flask(__name__)
@@ -40,19 +41,19 @@ def register():
         name = request.form.get("username")
         password =request.form.get("password")
         time = datetime.now()
+        if name == "":
+            flash("please enter the deaitls to register.")
+            return redirect(url_for("register"))
         queryres = userdata.query.filter_by(username = name).first()
         if queryres is None:
             user = userdata(username = name, password = password, time = time)
             db.session.add(user)
             db.session.commit()
             session["user"] = name
-            if "user" in session:
-                user = session["user"]
-                flash("The user is successfully registered.")
-                return render_template("home.html")
+            return redirect(url_for(userhome))
         else:
             flash("The user is already registered")
-            return render_template("register.html")
+            return redirect(url_for("register"))
 
 @app.route("/admin")
 def userdetails():
@@ -70,21 +71,27 @@ def auth():
             return redirect(url_for("userhome"))
         else :
             flash("The entered passowrd of the account doesnot match.")
-            return render_template("register.html")
+            return redirect(url_for("register"))
     else:
         flash("Your logging credentials are invalid.")
-        return render_template("register.html")
+        return redirect(url_for("register"))
 
 @app.route("/logout")
 def logout():
     session.pop("user",None)
-    return render_template("register.html")
+    flash("You are logout.")
+    return redirect(url_for("register"))
 
 @app.route("/userhome")
 def userhome():
     if "user" in session:
         user = session["user"]
-        return render_template("home.html")
+        booksn = books.query.all()
+        return render_template("home.html", books = booksn )
     else:
         flash("Login with the credentails.")
-        return render_template("register.html")
+        return redirect(url_for("register"))
+
+@app.route("/books/<string:ISBN_number>")
+def bookspage(ISBN_number):
+    pass

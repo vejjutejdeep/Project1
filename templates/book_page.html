@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" 
+            integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <head>
+        <meta charset="UTF-8">
+        <meta name = "viewport">
+        <title>home</title>
+    </head>
+    <body>
+        <div class = "container-fluid">
+            <h4>&nbsp;</h4>
+            <div class="alert alert-info" style="height: 65px;" role="alert" style="text-align: right;">
+                <form action="{{url_for('logout')}}">
+                    <button type="submit" class="btn btn-info" formaction="/logout" style="float: left;">Logout</button>
+                </form> 
+            </div>
+            
+            <div class = "container-fluid" style = "height: 500px; background-color: rgb(227, 242, 255);">
+                <table class="table">
+                    <thead class="thead-dark">
+                        <tr>
+                          <th scope="col" colspan=2>Details of the book that you have selected are as follows:</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <th scope="row">ISBN Number</th>
+                          <td> {{ books.ISBN_number }}</td>
+                        </tr>
+                        <tr>
+                          <th scope="row">Title of the book</th>
+                          <td>{{ books.name }}</td>
+                        </tr>
+                        <tr>
+                          <th scope="row">Author of the book</th>
+                          <td>{{ books.author }}</td>
+                        </tr>
+                        <tr>
+                          <th scope="row">Publication year</th>
+                          <td>{{ books.publication_year }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+            </div>
+       
+        </div>
+    </body>
+</html>

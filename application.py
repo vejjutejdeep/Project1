@@ -92,27 +92,19 @@ def userhome():
         flash("Login with the credentails.")
         return redirect(url_for("register"))
 
-# @app.route("/books/<string:ISBN_number>")
-# def bookspage(ISBN_number):
-#     pass
-
-def get_book_details(isbn_no = None):
-    if isbn_no is None:
-        return None
-    else:
-        books = books.query.filter_by(ISBN_number=isbn_no).all()
-        return books[0]
-
-@app.route('/book_page', methods=["GET"])
+@app.route('/book_page/<string:ISBN_number>', methods=["GET"])
 def book_page(ISBN_number):
-    isbn_no = request.form["ISBN_number"]
-    if (isbn_no == None):
+    if (ISBN_number == None):
         flash("Invalid ISBN Number")
         return render_template("book_page.html", books=None)
     else:
-        book = get_book_details(isbn_no)
-        if book is None:
-            flash("Invalid ISBN Number")
-            return render_template("book_page.html", books=None)
+        if ISBN_number is None:
+            return None
         else:
-            return render_template("book_page.html", books=books)
+            book = books.query.filter_by(ISBN_number=ISBN_number).all()
+            b = book[0]
+            if b is None:
+                flash("Invalid ISBN Number")
+                return render_template("book_page.html", b=None)
+            else:
+                return render_template("book_page.html", b=b)

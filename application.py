@@ -6,7 +6,7 @@ from flask_session import Session
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 from userdata import *
-
+from review import *
 
 app = Flask(__name__)
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
@@ -30,7 +30,7 @@ db.init_app(app)
 
 @app.route("/")
 def index():
-    return "Project 1: TODO"
+    return "Welcome to BOOKS"
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
@@ -81,3 +81,18 @@ def userhome():
     else:
         flash("Login with the credentails.")
         return render_template("register.html")
+
+@app.route("/review",methods=["GET", "POST"])
+def review():
+    if request.method=="GET":
+        return render_template("Reviews.html")
+    else:
+        username  = request.form.get("username")
+        ISBN = ("one")
+        Review = request.form.get("Review")
+        Rating = request.form.get("Rating")
+        time = datetime.now()
+        Reviews= Reviewdata(username = username, ISBN = ISBN,Review = Review,Rating=Rating,time=time)
+        db.session.add(Reviews)
+        db.session.commit()
+        return render_template("Reviews.html" )

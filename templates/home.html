@@ -49,7 +49,7 @@
     <div class="container">
         {% for book in books %}
             
-                <div>{{book.ISBN_number}}<br>{{book.name}}<br>{{book.author}} <br><a href="{{ url_for('bookspage' , ISBN_number = book.ISBN_number) }}">learn more</a></div>
+                <div>{{book.ISBN_number}}<br>{{book.name}}<br>{{book.author}} <br><a href="{{ url_for('book_page' , ISBN_number = book.ISBN_number) }}">learn more</a></div>
         {% endfor %}
     </div>
 {% endblock %}

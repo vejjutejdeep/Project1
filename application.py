@@ -6,7 +6,7 @@ from flask_session import Session
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 from userdata import *
-from review import *
+from Reviewdata import *
 
 app = Flask(__name__)
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
@@ -87,12 +87,14 @@ def review():
     if request.method=="GET":
         return render_template("Reviews.html")
     else:
-        username  = request.form.get("username")
-        ISBN = ("one")
+        username  = session["user"] 
+        ISBN = "ISBN"
+        
         Review = request.form.get("Review")
         Rating = request.form.get("Rating")
         time = datetime.now()
-        Reviews= Reviewdata(username = username, ISBN = ISBN,Review = Review,Rating=Rating,time=time)
-        db.session.add(Reviews)
+        addReview= Reviewdata(username = username, ISBN = ISBN,Review = Review,Rating=Rating,time=time)
+        db.session.add(addReview)
         db.session.commit()
-        return render_template("Reviews.html" )
+        reviews = Reviewdata.query.order_by(Reviewdata.time).all()
+        return render_template("Reviews.html" ,submitted = reviews)

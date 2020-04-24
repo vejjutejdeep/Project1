@@ -4,7 +4,7 @@ from datetime import datetime
 db = SQLAlchemy()
 
 class Reviewdata(db.Model):
-    __tablename__="Reviews"
+    __tablename__="Reviewdata"
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String, nullable=False)
     ISBN = db.Column(db.String, nullable=True)

@@ -5,9 +5,8 @@ db = SQLAlchemy()
 
 class Reviewdata(db.Model):
     __tablename__="Reviewdata"
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String, nullable=False)
-    ISBN = db.Column(db.String, nullable=True)
+    username = db.Column(db.String , primary_key=True)
+    ISBN = db.Column(db.String, primary_key=True)
     Review = db.Column(db.String,nullable=False)
     Rating = db.Column(db.Integer,nullable=True)
     time = db.Column(db.DateTime, nullable=False)

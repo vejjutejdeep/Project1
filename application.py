@@ -5,8 +5,10 @@ from flask import Flask, session,render_template, request,flash, redirect, url_f
 from flask_session import Session
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
+from model import *
 from userdata import *
 from Reviewdata import *
+from operator import and_
 
 app = Flask(__name__)
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
@@ -84,17 +86,30 @@ def userhome():
 
 @app.route("/review",methods=["GET", "POST"])
 def review():
+    rev = True
+    reviews = Reviewdata.query.order_by(Reviewdata.time).all()
+    username  = session["user"] 
+    ISBN = "ISBN"
     if request.method=="GET":
-        return render_template("Reviews.html")
+        if Reviewdata.query.filter(and_(Reviewdata.username == username, Reviewdata.ISBN==ISBN)).first():
+            return render_template("Reviews.html" ,submitted = reviews,review =rev)
+
+        else:
+            rev = False
+            return render_template("Reviews.html" ,submitted = reviews,review =rev)
+
+
     else:
-        username  = session["user"] 
-        ISBN = "ISBN"
         
-        Review = request.form.get("Review")
-        Rating = request.form.get("Rating")
-        time = datetime.now()
-        addReview= Reviewdata(username = username, ISBN = ISBN,Review = Review,Rating=Rating,time=time)
-        db.session.add(addReview)
-        db.session.commit()
-        reviews = Reviewdata.query.order_by(Reviewdata.time).all()
-        return render_template("Reviews.html" ,submitted = reviews)
+        if Reviewdata.query.filter(and_(Reviewdata.username == username, Reviewdata.ISBN==ISBN)).first():
+            return render_template("Reviews.html" ,submitted = reviews,review =rev)
+   
+        else:
+            rev = False
+            Review = request.form.get("Review")
+            Rating = request.form.get("Rating")
+            time = datetime.now()
+            addReview= Reviewdata(username = username, ISBN = ISBN,Review = Review,Rating=Rating,time=time)
+            db.session.add(addReview)
+            db.session.commit()
+            return render_template("Reviews.html" ,submitted = reviews, review =rev)

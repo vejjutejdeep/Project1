@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <head>
         <meta charset="UTF-8">
         <meta name = "viewport">
@@ -25,13 +26,37 @@
             </div>
         </div>
 </div>
+{% if review: %}
 <form action="{{ url_for('review') }}" method="post">
     <div class="form-group">
+      
         <label for="Review">Review</label>
-        <textarea rows="3" cols="20" name="Review" >Enter text here...</textarea>
+        <textarea rows="3" cols="20" name="Review" disabled  placeholder="Enter the text here..."></textarea>
     </div>
+    <div>
+        <label for="Rating" style="width:min-content;"><b>Rating</b></label>
+                <select class="form-control " id="options" name="Rating" disabled >
+                    <option>0</option>
+                    <option>1</option>
+                    <option>2</option>
+                    <option>3</option>
+                    <option>4</option>
+                    <option>5</option>
+                </select>
+            </div>
+            <button class="btn btn-primary" type="submit">submit</button>
+</form>
+</div>
+{% else %}
+<div></div>
+<form action="{{ url_for('review') }}" method="post">
     <div class="form-group">
-        <label for="Rating"><b>Rating</b></label>
+      
+        <label for="Review">Review</label>
+        <textarea rows="3" cols="20" name="Review" placeholder="Enter the text here..."></textarea>
+    </div>
+    <div>
+        <label for="Rating" style="width:min-content;"><b>Rating</b></label>
                 <select class="form-control " id="options" name="Rating" >
                     <option>0</option>
                     <option>1</option>
@@ -44,20 +69,26 @@
             <button class="btn btn-primary" type="submit">submit</button>
 </form>
 </div>
+{% endif%}
 <div class="review">
+    <p>REVIEWS & RATING </p>
     {% for review in submitted %}
-    <header>
-        {{review.username}}
-        <span style="color: blueviolet;font-weight: bold;">{{review.Rating}}</span>
-    </header>
-    <p>{{review.Review}} </p>
-    {% endfor %}
+<div class="card bg-light mb-3" style="max-width: 18rem;">
+    <div class="card-header"> {{review.username}}
+        <span style="color: blueviolet;font-weight: bold;"> :     {{review.Rating}}</span>
+    </div>
+    <div class="card-body">
+      <p class="card-text">{{review.Review}}</p>
+    </div>
+  </div>
+  {% endfor %}
 </div>
 </body>
 <style>
     form-group.select{
         width: min-content;
         height: max-content;
+        margin-right: 50px;
     }
 </style>
 </html>

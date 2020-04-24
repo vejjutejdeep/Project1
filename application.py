@@ -7,6 +7,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 from userdata import *
 from model import *
+import string
 
 
 app = Flask(__name__)
@@ -95,3 +96,29 @@ def userhome():
 @app.route("/books/<string:ISBN_number>")
 def bookspage(ISBN_number):
     pass
+
+@app.route("/search", methods = ["POST"])
+def search():
+    tag=request.form.get("search")
+    tag = string.capwords(tag)
+    # print("tag " + tag)
+    if tag != "":
+        searchque="%{}%".format(tag)
+        # print(searchque)
+        ISBN= books.query.filter(books.ISBN_number.like(searchque)).all()
+        if len(ISBN) == 0:
+            usname = books.query.filter(books.name.like(searchque)).all()
+            if len(usname) == 0:
+                authorw = books.query.filter(books.author.like(searchque)).all()
+                if len(authorw) == 0:
+                    flash("The searched book does not exists.")
+                    return render_template("home.html", books = None)
+                else:
+                    return render_template("home.html", books = authorw)
+            else:
+                return render_template("home.html", books = usname)
+        else:
+            return render_template("home.html", books = ISBN)
+    else:
+        flash("Fill the search details before the clicking on search")
+        return redirect(url_for("userhome"))

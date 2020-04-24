@@ -1,15 +1,107 @@
 {% extends "layout.html" %}
 {% block head %}
-<link rel="stylesheet" href="../static/style.css">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
+        * {box-sizing: border-box;}
+        body{
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+            font-size: medium;
+            margin: 0;
+            background-color: skyblue;
+        }
+        
+        .topnav {
+            overflow: hidden;
+            background-color: #e9e9e9;
+        }
+
+        .topnav .home-container {
+            float: left;
+        }
+
+        .topnav .search-container button {
+            float: right;
+            padding: 6px 10px;
+            margin-top: 8px;
+            margin-right: 16px;
+            background: #ddd;
+            font-size: 17px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .topnav .home-container button {
+            float: left;
+            padding: 6px 10px;
+            margin-top: 8px;
+            margin-right: 16px;
+            background: #ddd;
+            font-size: 15px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .topnav a {
+            float: left;
+            display: block;
+            color: black;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+            font-size: 17px;
+        }
+
+
+
+        .topnav .search-container {
+            float: right;
+            margin-right: 600px;
+        }
+
+        .topnav input[type=text] {
+            padding: 6px;
+            margin-top: 8px;
+            font-size: 17px;
+            border: none;
+        }
+
+
+        .topnav .logout {
+            float: right;
+            padding: 6px;
+            margin-top: 8px;
+            font-size: 17px;
+            border: none;
+        }
+
+
+        .topnav .search-container button:hover {
+            background: #ccc;
+        }
+
+        @media screen and (max-width: 600px) {
+            .topnav .search-container {
+                float: none;
+            }
+            .topnav a, .topnav input[type=text], .topnav .search-container button {
+                float: none;
+                display: block;
+                text-align: left;
+                width: 100%;
+                margin: 0;
+                padding: 14px;
+            }
+            .topnav input[type=text] {
+                border: 1px solid #ccc;  
+            }
+        }
         .container {
             display: flex;
             flex-wrap: wrap;
         }
 
         .container > div {
-            background-color: springgreen;
+            background-color: floralwhite;
             font-size: 20px;
             margin: 20px;
             padding: 20px;
@@ -17,7 +109,7 @@
         }
 
         .container > div:hover {
-            background-color: darkgray;
+            background-color: lightgrey;
             width: 210px;
         }
 
@@ -31,11 +123,29 @@
 
 
 {% block body %}
-    <div class="row">
-        <div class="col-2"><h3> Home page</div>
-        <div class="col-4"><input type="text" class="form-control" name="seaarch" placeholder="Enter the deatils of the books to be searched"></div>
-        <div class="col-5"></div>
-        <div class="col-1"> <a href="{{url_for('logout') }}">logout</a></div>
+    <div class="topnav">
+        <div class="home-container">
+          <form action="{{ url_for('userhome') }}" method="GET">
+              <a class="active" href="#">Home</a>
+              <button type="submit"><i class="fa fa-home"></i></button>
+          </form>
+        </div>
+        <a class="logout" href="{{url_for('logout') }}"> logout</a>
+        <div class="search-container">
+          <form action="{{ url_for('search') }}" method="GET">
+            <input type="text" placeholder="Search.." name="search">
+            <button type="submit"><i class="fa fa-search"></i></button>
+          </form>
+        </div>
+      </div>
+    <div>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <p>{{ message }}</p>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
     </div>
     <div>
         {% with messages = get_flashed_messages() %}

@@ -91,7 +91,7 @@ def userhome():
     else:
         flash("Login with the credentails.")
         return redirect(url_for("register"))
-
+# This is the function for Book page
 @app.route('/book_page/<string:ISBN_number>', methods=["GET"])
 def book_page(ISBN_number):
     if (ISBN_number == None):

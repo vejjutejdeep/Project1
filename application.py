@@ -106,13 +106,19 @@ def search():
         searchque="%{}%".format(tag)
         # print(searchque)
         ISBN= books.query.filter(books.ISBN_number.like(searchque)).all()
+        print("ISBN")
+        print(ISBN)
         if len(ISBN) == 0:
             usname = books.query.filter(books.name.like(searchque)).all()
             if len(usname) == 0:
+                print("usname")
+                print(usname)
                 authorw = books.query.filter(books.author.like(searchque)).all()
                 if len(authorw) == 0:
+                    print("author")
+                    print(authorw)
                     flash("The searched book does not exists.")
-                    return render_template("home.html", books = None)
+                    return render_template("home.html", books = [])
                 else:
                     return render_template("home.html", books = authorw)
             else:

@@ -4,6 +4,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
     integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+<link rel="stylesheet" href="reviewstyle.css"
 <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
@@ -146,115 +147,7 @@
     {% endfor %}
     </div>
 
-    <style>
-        :root {
-            --image_size: 50px;
-        }
-
-        /* Version 1 */
-        .reviews {
-            padding: 2px;
-            max-width: 768px;
-            margin: 0 auto;
-        }
-
-        .review-item {
-            background-color: white;
-            padding: 15px;
-            margin-bottom: 5px;
-            border: 1px solid grey;
-            border-radius: 4px;
-        }
-
-        .review-item .review-date {
-            color: #cecece;
-        }
-
-        .review-item .review-text {
-            font-size: 16px;
-            font-weight: normal;
-            margin-top: 5px;
-            color: #343a40;
-        }
-
-        .review-item .reviewer {
-            width: var(--image_size);
-            height: var(--image_size);
-            border: 1px solid #cecece;
-        }
-
-        /* Version 2 */
-        .review-container {
-            margin-bottom: 1rem;
-        }
-
-        @import url(//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css);
-
-        fieldset,
-        label {
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            margin: 20px;
-        }
-
-        h1 {
-            font-size: 1.5em;
-            margin: 10px;
-        }
-
-        /****** Style Star Rating Widget *****/
-
-        .rating {
-            border: none;
-            float: left;
-        }
-
-        .rating>input {
-            display: none;
-        }
-
-        .rating>label:before {
-            margin: 5px;
-            font-size: 1.25em;
-            font-family: FontAwesome;
-            display: inline-block;
-            content: "\f005";
-        }
-
-        .rating>.half:before {
-            content: "\f089";
-            position: absolute;
-        }
-
-        .rating>label {
-            color: #ddd;
-            float: right;
-        }
-
-        /***** CSS Magic to Highlight Stars on Hover *****/
-
-        .rating>input:checked~label,
-        /* show gold star when clicked */
-        .rating:not(:checked)>label:hover,
-        /* hover current star */
-        .rating:not(:checked)>label:hover~label {
-            color: #FFD700;
-        }
-
-        /* hover previous stars in list */
-
-        .rating>input:checked+label:hover,
-        /* hover current star when changing rating */
-        .rating>input:checked~label:hover,
-        .rating>label:hover~input:checked~label,
-        /* lighten current selection */
-        .rating>input:checked~label:hover~label {
-            color: #FFED85;
-        }
-    </style>
+   
 </body>
 
 

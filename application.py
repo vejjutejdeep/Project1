@@ -101,30 +101,17 @@ def bookspage(ISBN_number):
 def search():
     tag=request.form.get("search")
     tag = string.capwords(tag)
-    # print("tag " + tag)
     if tag != "":
         searchque="%{}%".format(tag)
-        # print(searchque)
-        ISBN= books.query.filter(books.ISBN_number.like(searchque)).all()
-        print("ISBN")
-        print(ISBN)
-        if len(ISBN) == 0:
-            usname = books.query.filter(books.name.like(searchque)).all()
-            if len(usname) == 0:
-                print("usname")
-                print(usname)
-                authorw = books.query.filter(books.author.like(searchque)).all()
-                if len(authorw) == 0:
-                    print("author")
-                    print(authorw)
-                    flash("The searched book does not exists.")
-                    return render_template("home.html", books = [])
-                else:
-                    return render_template("home.html", books = authorw)
-            else:
-                return render_template("home.html", books = usname)
+        ISBN = books.query.filter(books.ISBN_number.like(searchque)).all()
+        usname = books.query.filter(books.name.like(searchque)).all()
+        authorw = books.query.filter(books.author.like(searchque)).all()
+        result = list(set(ISBN + usname + authorw))
+        if len(result) == 0:
+            flash("The searched book does not exists.")
+            return render_template("home.html", books = [])
         else:
-            return render_template("home.html", books = ISBN)
+            return render_template("home.html", books = result)
     else:
         flash("Fill the search details before the clicking on search")
         return redirect(url_for("userhome"))

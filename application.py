@@ -94,17 +94,17 @@ def review():
     ISBN = "ISBN"
     if request.method=="GET":
         if Reviewdata.query.filter(and_(Reviewdata.username == username, Reviewdata.ISBN==ISBN)).first():
-            return render_template("Reviews.html" ,submitted = reviews,review =rev)
+            return render_template("book_page.html" ,submitted = reviews,review =rev)
 
         else:
             rev = False
-            return render_template("Reviews.html" ,submitted = reviews,review =rev)
+            return render_template("book_page.html" ,submitted = reviews,review =rev)
 
 
     else:
         
         if Reviewdata.query.filter(and_(Reviewdata.username == username, Reviewdata.ISBN==ISBN)).first():
-            return render_template("Reviews.html" ,submitted = reviews,review =rev)
+            return render_template("book_page.html" ,submitted = reviews,review =rev)
    
         else:
             rev = False

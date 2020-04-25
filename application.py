@@ -3,6 +3,7 @@ import datetime
 
 from flask import Flask, session,render_template, request,flash, redirect, url_for
 from flask_session import Session
+from flask_humanize import Humanize
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 from model import *
@@ -11,6 +12,7 @@ from Reviewdata import *
 from operator import and_
 
 app = Flask(__name__)
+humanize = Humanize(app)
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 # Check for environment variable
 if not os.getenv("DATABASE_URL"):
@@ -106,10 +108,11 @@ def review():
    
         else:
             rev = False
-            Review = request.form.get("Review")
-            Rating = request.form.get("Rating")
+            print(request.form)
+            Review = request.form.get("review-text")
+            Rating = request.form.get("review-rating")
             time = datetime.now()
             addReview= Reviewdata(username = username, ISBN = ISBN,Review = Review,Rating=Rating,time=time)
             db.session.add(addReview)
             db.session.commit()
-            return render_template("Reviews.html" ,submitted = reviews, review =rev)
+            return redirect(url_for("review"))

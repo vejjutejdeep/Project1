@@ -18,4 +18,3 @@ class books(db.Model):
         self.name = name
         self.author = author
         self.publication_year = year
-

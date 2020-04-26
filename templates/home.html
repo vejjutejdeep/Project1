@@ -1,55 +1,12 @@
 {% extends "layout.html" %}
-{% block head %}
-<link rel="stylesheet" href="../static/style.css">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        .container {
-            display: flex;
-            flex-wrap: wrap;
-        }
 
-        .container > div {
-            background-color: springgreen;
-            font-size: 20px;
-            margin: 20px;
-            padding: 20px;
-            width: 190px;
-        }
-
-        .container > div:hover {
-            background-color: darkgray;
-            width: 210px;
-        }
-
-        .row {
-            background-color: darkslategrey;
-            padding: 10px;
-            color: cornsilk;
-        }
-    </style>
+{% block heading %}
+    Registrstion page
 {% endblock %}
 
-
 {% block body %}
-    <div class="row">
-        <div class="col-2"><h3> Home page</div>
-        <div class="col-4"><input type="text" class="form-control" name="seaarch" placeholder="Enter the deatils of the books to be searched"></div>
-        <div class="col-5"></div>
-        <div class="col-1"> <a href="{{url_for('logout') }}">logout</a></div>
-    </div>
-    <div>
-        {% with messages = get_flashed_messages() %}
-            {% if messages %}
-                {% for message in messages %}
-                    <p>{{ message }}</p>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
-    </div>
-    <div class="container">
-        {% for book in books %}
-            
-                <div>{{book.ISBN_number}}<br>{{book.name}}<br>{{book.author}} <br><a href="{{ url_for('book_page' , ISBN_number = book.ISBN_number) }}">learn more</a></div>
-        {% endfor %}
-    </div>
+    <!-- <form action="{{ url_for('logout') }}" method="post">
+        <button class="btn btn-primary" type="submit"> logout</button>
+    </form> -->
+    <a href="{{url_for('logout') }}">logout</a>
 {% endblock %}

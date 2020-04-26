@@ -41,19 +41,10 @@ def register():
         name = request.form.get("username")
         password =request.form.get("password")
         time = datetime.now()
-        if name == "":
-            flash("please enter the deaitls to register.")
-            return redirect(url_for("register"))
-        queryres = userdata.query.filter_by(username = name).first()
-        if queryres is None:
-            user = userdata(username = name, password = password, time = time)
-            db.session.add(user)
-            db.session.commit()
-            session["user"] = name
-            return redirect(url_for(userhome))
-        else:
-            flash("The user is already registered")
-            return redirect(url_for("register"))
+        user = userdata(username = name, password = password, time = time)
+        db.session.add(user)
+        db.session.commit()
+        return render_template("data.html", name=name)
 
 @app.route("/admin")
 def userdetails():
@@ -66,32 +57,32 @@ def auth():
     password = request.form.get("password")
     queryres = userdata.query.filter_by(username = uname).first()
     if queryres is not None:
+        print(password == queryres.password)
+        print(uname == queryres.password)
         if password == queryres.password and uname == queryres.username:
             session["user"] = uname
             return redirect(url_for("userhome"))
         else :
             flash("The entered passowrd of the account doesnot match.")
-            return redirect(url_for("register"))
+            return render_template("register.html")
     else:
         flash("Your logging credentials are invalid.")
-        return redirect(url_for("register"))
+        return render_template("register.html")
 
 @app.route("/logout")
 def logout():
     session.pop("user",None)
-    flash("You are logout.")
-    return redirect(url_for("register"))
+    return render_template("register.html")
 
 @app.route("/userhome")
 def userhome():
     if "user" in session:
         user = session["user"]
-        booksn = books.query.all()
-        return render_template("home.html", books = booksn )
+        return render_template("home.html")
     else:
         flash("Login with the credentails.")
-        return redirect(url_for("register"))
-# This is the function for Book page
+        return render_template("register.html")
+
 @app.route('/book_page/<string:ISBN_number>', methods=["GET"])
 def book_page(ISBN_number):
     if (ISBN_number == None):

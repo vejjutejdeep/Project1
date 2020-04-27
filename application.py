@@ -85,17 +85,14 @@ def userhome():
 
 @app.route('/book_page/<string:ISBN_number>', methods=["GET"])
 def book_page(ISBN_number):
-    if (ISBN_number == None):
+    if (ISBN_number is None or len(ISBN_number) == 0):
         flash("Invalid ISBN Number")
-        return render_template("book_page.html", books=None)
+        return render_template("book_page.html", b=None)
     else:
-        if ISBN_number is None:
-            return None
+        book = books.query.filter_by(ISBN_number=ISBN_number).all()
+        b = book[0]
+        if b is None:
+            flash("Invalid ISBN Number")
+            return render_template("book_page.html", b=None)
         else:
-            book = books.query.filter_by(ISBN_number=ISBN_number).all()
-            b = book[0]
-            if b is None:
-                flash("Invalid ISBN Number")
-                return render_template("book_page.html", b=None)
-            else:
-                return render_template("book_page.html", b=b)
+            return render_template("book_page.html", b=b)

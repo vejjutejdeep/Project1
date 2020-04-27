@@ -2,12 +2,38 @@
 
 {% block heading %}
     Registrstion page
+<!-- <link ref="sytlesheet" type="text/css" href="../static/styles/stylehome.css"> -->
 {% endblock %}
 
 {% block body %}
-    <!-- <form action="{{ url_for('logout') }}" method="post">
-        <button class="btn btn-primary" type="submit"> logout</button>
-    </form> -->
-    <a href="{{url_for('logout') }}">logout</a>
-    <a href="{{url_for('review') }}">Review here</a>
+    <div class="topnav">
+        <div class="home-container">
+          <form action="{{ url_for('userhome') }}" method="GET">
+              <a class="active" href="#">Home</a>
+              <button type="submit"><i class="fa fa-home"></i></button>
+          </form>
+        </div>
+        <a class="logout" href="{{url_for('logout') }}"> logout</a>
+        <div class="search-container">
+          <form action="{{ url_for('search') }}" method="POST">
+            <input type="text" placeholder="Search.." name="search">
+            <button type="submit"><i class="fa fa-search"></i></button>
+          </form>
+        </div>
+      </div>
+    <div>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <p>{{ message }}</p>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+    <div class="container">
+        {% for book in books %}
+            
+                <div>{{book.ISBN_number}}<br>{{book.name}}<br>{{book.author}} <br><a href="{{ url_for('book_page' , ISBN_number = book.ISBN_number) }}">learn more</a></div>
+        {% endfor %}
+    </div>
 {% endblock %}

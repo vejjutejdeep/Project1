@@ -10,6 +10,9 @@ from model import *
 from userdata import *
 from Reviewdata import *
 from operator import and_
+from model import *
+import string
+
 
 app = Flask(__name__)
 humanize = Humanize(app)
@@ -81,38 +84,66 @@ def logout():
 def userhome():
     if "user" in session:
         user = session["user"]
-        return render_template("home.html")
+        booksn = books.query.all()
+        return render_template("home.html", books = booksn)   
     else:
         flash("Login with the credentails.")
         return render_template("register.html")
 
-@app.route("/review",methods=["GET", "POST"])
-def review():
-    rev = True
-    reviews = Reviewdata.query.order_by(Reviewdata.time).all()
+@app.route("/review/<ISBN>",methods=["GET", "POST"])
+def review(ISBN):
     username  = session["user"] 
-    ISBN = "ISBN"
-    if request.method=="GET":
-        if Reviewdata.query.filter(and_(Reviewdata.username == username, Reviewdata.ISBN==ISBN)).first():
-            return render_template("book_page.html" ,submitted = reviews,review =rev)
+    print(request.form)
+    Review = request.form.get("review-text")
+    Rating = request.form.get("review-rating")
+    time = datetime.now()
+    try:
+        addReview= Reviewdata(username = username, ISBN = ISBN,Review = Review,Rating=Rating,time=time)
+        db.session.add(addReview)
+        db.session.commit()
+        return redirect(url_for("book_page",ISBN_number = ISBN))
+    except:
+        flash("Something went wrong while adding the review ")
+        return redirect(url_for("book_page",ISBN_number = ISBN))
 
-        else:
-            rev = False
-            return render_template("book_page.html" ,submitted = reviews,review =rev)
-
-
+@app.route('/book_page/<string:ISBN_number>', methods=["GET"])
+def book_page(ISBN_number):
+    if (ISBN_number is None or len(ISBN_number) == 0):
+        flash("Invalid ISBN Number")
+        return render_template("book_page.html", b=None)
     else:
-        
-        if Reviewdata.query.filter(and_(Reviewdata.username == username, Reviewdata.ISBN==ISBN)).first():
-            return render_template("book_page.html" ,submitted = reviews,review =rev)
-   
+        book = books.query.filter_by(ISBN_number=ISBN_number).all()
+        b = book[0]
+        if b is None:
+            flash("Invalid ISBN Number")
+            return render_template("book_page.html", b=None)
         else:
-            rev = False
-            print(request.form)
-            Review = request.form.get("review-text")
-            Rating = request.form.get("review-rating")
-            time = datetime.now()
-            addReview= Reviewdata(username = username, ISBN = ISBN,Review = Review,Rating=Rating,time=time)
-            db.session.add(addReview)
-            db.session.commit()
-            return redirect(url_for("review"))
+            rev = True
+            ISBN = ISBN_number
+            reviews = Reviewdata.query.filter(Reviewdata.ISBN == ISBN).all()
+            username  = session["user"] 
+            
+            if Reviewdata.query.filter(and_(Reviewdata.username == username, Reviewdata.ISBN==ISBN)).first():
+                 return render_template("book_page.html" ,submitted = reviews,review =rev,b = b)
+            else:
+                rev = False
+                return render_template("book_page.html" ,submitted = reviews,review =rev,b = b)
+
+@app.route("/search", methods = ["POST"])
+def search():
+    tag=request.form.get("search")
+    tag = string.capwords(tag)
+    if tag != "":
+        searchque="%{}%".format(tag)
+        ISBN = books.query.filter(books.ISBN_number.like(searchque)).all()
+        usname = books.query.filter(books.name.like(searchque)).all()
+        authorw = books.query.filter(books.author.like(searchque)).all()
+        result = list(set(ISBN + usname + authorw))
+        if len(result) == 0:
+            flash("The searched book does not exists.")
+            return render_template("home.html", books = [])
+        else:
+            return render_template("home.html", books = result)
+    else:
+        flash("Fill the search details before the clicking on search")
+        return redirect(url_for("userhome"))

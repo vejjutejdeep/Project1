@@ -1,37 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
-    integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-<link rel="stylesheet" href="reviewstyle.css"
-
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
-<!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous"> -->
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport">
-    <title>home</title>
+<meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" 
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <script src = "stylehome.css"></script>
 </head>
-
-<body>
-    <div class="container-fluid">
-        <div class="alert alert-info" style="height: 65px;" role="alert" style="text-align: right;">
-            <form action="{{url_for('logout')}}">
-                <button type="submit" class="btn btn-info" formaction="/logout" style="float: left;">Logout</button>
-            </form>
-        </div>
-        <div class="container-fluid" style="height: 500px; background-color: rgb(227, 242, 255);">
-
-        </div>
+  <body>
+    <div class="topnav">
+      <a class="logout" href="{{url_for('logout') }}" style="float: right;"> logout&nbsp;</a>
+      <div class="home-container">
+        <form action="{{ url_for('userhome') }}" method="GET">
+            <a class="active" href="#">Home</a>
+            <button type="submit"><i class="fa fa-home"></i></button>
+        </form>
+      </div>
     </div>
+    <div class = "container-fluid" style = "height: 250px;width: 1000px; background-color: rgb(227, 242, 255);">
+      &nbsp;
+      <table class="table">
+        <thead class="thead-dark">
+            <tr>
+              <th scope="col" colspan=2>Details of the book are as follows:</th>
+            </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">ISBN Number</th>
+            <td> {{ b.ISBN_number }}</td>
+          </tr>
+          <tr>
+            <th scope="row">Title of the book</th>
+            <td>{{ b.name }}</td>
+          </tr>
+          <tr>
+            <th scope="row">Author of the book</th>
+            <td>{{ b.author }}</td>
+          </tr>
+          <tr>
+            <th scope="row">Publication year</th>
+            <td>{{ b.publication_year }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    
     {% if review %}
     Already Reviewed
     {% else %}
-    <form id="reviewForm" action="{{ url_for('review') }}" method="post">
+    <form id="reviewForm" action="{{ url_for('review',ISBN = b.ISBN_number) }}" method="post">
         <div class="form-group">
             <label for="review-text"><b>Review</b></label>
             <textarea class="form-control" name="review-text" id="review-text" rows="3"></textarea>
@@ -54,72 +76,12 @@
         </div>
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>
-    <!-- <div class="form-group">
-        <label for="Rating"><b>Rating</b></label>
-        <fieldset class="rating form-control">
-            <input type="radio" id="star5" name="rating" value="5" /><label class="full" for="star5"
-                title="Awesome - 5 stars"></label>
-            <input type="radio" id="star4" name="rating" value="4" /><label class="full" for="star4"
-                title="Pretty good - 4 stars"></label>
-            <input type="radio" id="star3" name="rating" value="3" /><label class="full" for="star3"
-                title="Meh - 3 stars"></label>
-            <input type="radio" id="star2" name="rating" value="2" /><label class="full" for="star2"
-                title="Kinda bad - 2 stars"></label>
-            <input type="radio" id="star1" name="rating" value="1" /><label class="full" for="star1"
-                title="Sucks big time - 1 star"></label>
-        </fieldset>
-    </div> -->
-    <!-- <form action="{{ url_for('review') }}" method="post">
-        <div class="form-group">
-
-            <label for="Review">Review</label>
-            <textarea rows="3" cols="20" name="Review" placeholder="Enter the text here..."></textarea>
-        </div>
-        <div>
-            <label for="Rating" style="width:min-content;"><b>Rating</b></label>
-            <fieldset class="rating">
-                <input type="radio" id="star5" name="rating" value="5" /><label class="full" for="star5"
-                    title="Awesome - 5 stars"></label>
-                <input type="radio" id="star4" name="rating" value="4" /><label class="full" for="star4"
-                    title="Pretty good - 4 stars"></label>
-                <input type="radio" id="star3" name="rating" value="3" /><label class="full" for="star3"
-                    title="Meh - 3 stars"></label>
-                <input type="radio" id="star2" name="rating" value="2" /><label class="full" for="star2"
-                    title="Kinda bad - 2 stars"></label>
-                <input type="radio" id="star1" name="rating" value="1" /><label class="full" for="star1"
-                    title="Sucks big time - 1 star"></label>
-            </fieldset>
-        </div>
-        <button class="btn btn-primary" type="submit">submit</button>
-    </form> -->
+    
     {% endif%}
     <div class="review">
         <h3 class="text-center">REVIEWS & RATING </h3>
         {% for review in submitted %}
-        <!-- Version 1 -->
-        <!-- <div class="reviews">
-            <div class="row blockquote review-item">
-                <div class="col-md-3 text-center">
-                    <img class="rounded-circle reviewer" src="http://standaloneinstaller.com/upload/avatar.png">
-                    <div class="caption">
-                        <small>{{review.username}}</small>
-                    </div>
-                </div>
-                <div class="col-md-9">
-                    <div class="ratebox">
-                        <span style="color: blueviolet;font-weight: bold;">
-                            {% for i in range(0,review.Rating) %}
-                            ⭐
-                            {% endfor %}
-                        </span>
-                    </div>
-                    <p class="review-text">{{review.Review}}</p>
-
-                    <small class="review-date">March 26, 2017</small>
-                </div>
-            </div>
-        </div> -->
-        <!-- Version 2 -->
+    
         <div class="review-container">
             <div class="card" style="max-width: 500px;margin: 2px auto;">
                 <div class="card-body">
@@ -149,6 +111,7 @@
 
    
 </body>
+
 
 
 </html>

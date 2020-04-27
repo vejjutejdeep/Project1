@@ -1,4 +1,5 @@
 Flask
 Flask-Session
+Flask-Humanize
 psycopg2-binary
 SQLAlchemy

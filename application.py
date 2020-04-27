@@ -6,6 +6,8 @@ from flask_session import Session
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 from userdata import *
+from model import *
+import string
 
 
 app = Flask(__name__)
@@ -40,10 +42,19 @@ def register():
         name = request.form.get("username")
         password =request.form.get("password")
         time = datetime.now()
-        user = userdata(username = name, password = password, time = time)
-        db.session.add(user)
-        db.session.commit()
-        return render_template("data.html", name=name)
+        if name == "":
+            flash("please enter the deaitls to register.")
+            return redirect(url_for("register"))
+        queryres = userdata.query.filter_by(username = name).first()
+        if queryres is None:
+            user = userdata(username = name, password = password, time = time)
+            db.session.add(user)
+            db.session.commit()
+            session["user"] = name
+            return redirect(url_for(userhome))
+        else:
+            flash("The user is already registered")
+            return redirect(url_for("register"))
 
 @app.route("/admin")
 def userdetails():
@@ -56,28 +67,51 @@ def auth():
     password = request.form.get("password")
     queryres = userdata.query.filter_by(username = uname).first()
     if queryres is not None:
-        print(password == queryres.password)
-        print(uname == queryres.password)
         if password == queryres.password and uname == queryres.username:
             session["user"] = uname
             return redirect(url_for("userhome"))
         else :
             flash("The entered passowrd of the account doesnot match.")
-            return render_template("register.html")
+            return redirect(url_for("register"))
     else:
         flash("Your logging credentials are invalid.")
-        return render_template("register.html")
+        return redirect(url_for("register"))
 
 @app.route("/logout")
 def logout():
     session.pop("user",None)
-    return render_template("register.html")
+    flash("You are logout.")
+    return redirect(url_for("register"))
 
 @app.route("/userhome")
 def userhome():
     if "user" in session:
         user = session["user"]
-        return render_template("home.html")
+        booksn = books.query.all()
+        return render_template("home.html", books = booksn )
     else:
         flash("Login with the credentails.")
-        return render_template("register.html")
+        return redirect(url_for("register"))
+
+@app.route("/books/<string:ISBN_number>")
+def bookspage(ISBN_number):
+    pass
+
+@app.route("/search", methods = ["POST"])
+def search():
+    tag=request.form.get("search")
+    tag = string.capwords(tag)
+    if tag != "":
+        searchque="%{}%".format(tag)
+        ISBN = books.query.filter(books.ISBN_number.like(searchque)).all()
+        usname = books.query.filter(books.name.like(searchque)).all()
+        authorw = books.query.filter(books.author.like(searchque)).all()
+        result = list(set(ISBN + usname + authorw))
+        if len(result) == 0:
+            flash("The searched book does not exists.")
+            return render_template("home.html", books = [])
+        else:
+            return render_template("home.html", books = result)
+    else:
+        flash("Fill the search details before the clicking on search")
+        return redirect(url_for("userhome"))

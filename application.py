@@ -78,7 +78,7 @@ def auth():
 @app.route("/logout")
 def logout():
     session.pop("user",None)
-    return render_template("register.html")
+    return render_template("register.html") 
 
 @app.route("/userhome")
 def userhome():

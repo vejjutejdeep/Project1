@@ -23,15 +23,60 @@
     <div class="container">
         <form action="{{ url_for('register') }}" method="post">
             <div class="form-group">
+                <p id =usernamedp></p>
                 <label for="username">username</label>
-                <input type="text" class="form-control" name="username" placeholder="Enter the username">
-            </div>
-            <div class="form-group">
+                <input type="text" id = "username" name="username" placeholder="Enter the username">
+                <p id =passwordp></p>
                 <label for="password">password</label>
-                <input type="password" class="form-control" name="password" placeholder="Enter the password">
+                <input type="password" id = "pass" name="password" placeholder="Enter the password">
             </div>
-            <button class="btn btn-primary" formaction="{{ url_for('auth') }}">Login</button>
-            <button class="btn btn-primary" type="submit">register</button>
+            <button class="btn btn-primary"  formaction="{{ url_for('auth') }}" type="submit">Login</button>
+            <button class="btn btn-primary" id="register" type="submit">register</button>
         </form>
     </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelector('#register').disabled = true;
+            var user = false
+
+            document.querySelector('#username').onchange = () => {
+                if (document.querySelector('#username').value.length > 0 && document.querySelector('#username').value.includes('@') && document.querySelector('#username').value.includes('.com')) {
+                    document.querySelector('#usernamedp').innerHTML = "username is fine"
+                    user = true
+                }
+                else {
+                    document.querySelector('#usernamedp').innerHTML = "should be in the form of abc@xy.zz"
+                    document.querySelector('#register').disabled = true;
+                }
+            };
+
+            document.querySelector('#pass').onchange = () => {
+                console.log(document.querySelector('#pass').value)
+                if (document.querySelector('#pass').value.length < 6) {
+                    console.log("if statement.")
+                    document.querySelector('#passwordp').innerHTML = "The Length is less than 6."
+                    document.querySelector('#register').disabled = true;
+                    
+                }
+                else {
+                    console.log("else statement.")
+                    pwd = document.querySelector('#pass').value
+                    var strongRegex = new RegExp("^(?=.[a-z])(?=.[A-Z])(?=.[0-9])(?=.[!@#\$%\^&\*])(?=.{8,})");
+                    // val = strongRegex.test(String(pwd))
+                    // val = pwd.match(strongRegex)
+                    // console.log(val)
+
+                    if (pwd.match(/[A-Z]/) && pwd.match(/[a-z]/) && pwd.match(/[0-9]/) && pwd.match(/[!@#$%^&*()]/) && user){
+                        console.log("passowrd is correct.")
+                        document.querySelector('#register').disabled = false;
+                    }
+                    else{
+                        document.querySelector('#passwordp').innerHTML = " The password should have atleast 1 uppercase, 1 lowercase, 1 digit and 1 special char."
+                        return false
+                    }
+                }
+            };
+
+        });
+    </script>
 {% endblock %}

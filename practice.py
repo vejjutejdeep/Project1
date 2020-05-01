@@ -1,17 +1,49 @@
-# from flask import Flask
+<script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelector('#register').disabled = true;
+    
+            document.querySelector('#username').onchange = () => {
+                if (document.querySelector('#username').value.length > 0 && document.querySelector('#username').value.include('@')) {
+                //             pwd = document.querySelector('#password').value
+                //             if (pwd.length > 6) {
+                //                 var strongRegex = new RegExp("^(?=.[a-z])(?=.[A-Z])(?=.[0-9])(?=.[!@#\$%\^&\*])(?=.{8,})");
+                //                 val = strongRegex.test(String(pwd))
+                //                 if (val){
+                    document.querySelector('#register').disabled = false;
+                }
+                else {
+                    document.querySelector('#usernamedp').innerHTML = "should be in the form of abc@xy.zz"
+                    document.querySelector('#register').disabled = false;
+                }
+                //                 else {
+                //                     document.querySelector('#passwordp').innerHTML = " The password should have atleast 1 uppercase, 1 lowercase, 1 digit and 1 special char and length should be more than 6 "
+                //                 }
+                //             }
+                //             else
+                //                 document.querySelector('#register').disabled = true;
+                //                 document.querySelector('#usernamedp').innerHTML = "should be in the form of abc@xy.zz"
+                //         };
+    
+                //         document.querySelector('.form-group').onsubmit = () => {
+    
+                //         // Create new item for list
+    
+    
+                //         // Add new item to task list
+    
+                //         // Clear input field and disable button again
+                //         document.querySelector('#username').value = '';
+                //         document.querySelector('#password').value = '';
+                //         document.querySelector('#register').disabled = true;
+    
+                        // Stop form from submitting
+            //             return false;
+            //         }
+            //     }
+                //     document.querySelector('#register').disabled = false;
+                // }
+                
+            };
 
-
-# app = Flask(__name__)
-
-# @app.route("/")
-# def index():
-#     return "hello welcome to the site."
-first_list = [1, 2, 2, 5]
-second_list = [2, 5, 7, 9]
-third_list = [2, 3, 4, 5]
-
-resulting_list = first_list + second_list + third_list
-
-# resulting_list = list(first_list)
-# resulting_list.extend(x for x in second_list if x not in resulting_list)
-print(list(set(resulting_list)))
+        });
+    </script>

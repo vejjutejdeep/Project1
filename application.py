@@ -1,7 +1,7 @@
 import os
 import datetime
 
-from flask import Flask, session,render_template, request,flash, redirect, url_for
+from flask import Flask, session, render_template, request, flash, redirect, url_for, jsonify
 from flask_session import Session
 from flask_humanize import Humanize
 from sqlalchemy import create_engine
@@ -39,20 +39,21 @@ db.init_app(app)
 def index():
     return "Welcome to BOOKS"
 
+
 @app.route("/register", methods=["GET", "POST"])
 def register():
-    if request.method=="GET":
+    if request.method == "GET":
         return render_template("register.html")
     else:
         name = request.form.get("username")
-        password =request.form.get("password")
+        password = request.form.get("password")
         time = datetime.now()
         if name == "":
             flash("please enter the deaitls to register.")
             return redirect(url_for("register"))
-        queryres = userdata.query.filter_by(username = name).first()
+        queryres = userdata.query.filter_by(username=name).first()
         if queryres is None:
-            user = userdata(username = name, password = password, time = time)
+            user = userdata(username=name, password=password, time=time)
             db.session.add(user)
             db.session.commit()
             session["user"] = name
@@ -61,58 +62,100 @@ def register():
             flash("The user is already registered")
             return redirect(url_for("register"))
 
+
 @app.route("/admin")
 def userdetails():
     user = userdata.query.order_by(userdata.time).all()
-    return render_template("userdetails.html", users = user)
+    return render_template("userdetails.html", users=user)
 
-@app.route("/auth", methods =["POST"]) 
+
+@app.route("/auth", methods=["POST"])
 def auth():
     uname = request.form.get("username")
     password = request.form.get("password")
-    queryres = userdata.query.filter_by(username = uname).first()
+    queryres = userdata.query.filter_by(username=uname).first()
     if queryres is not None:
         print(password == queryres.password)
         if password == queryres.password and uname == queryres.username:
             session["user"] = uname
             return redirect(url_for("userhome"))
-        else :
+        else:
             flash("The entered passowrd of the account doesnot match.")
             return render_template("register.html")
     else:
         flash("Your logging credentials are invalid.")
         return render_template("register.html")
 
+
 @app.route("/logout")
 def logout():
-    session.pop("user",None)
-    return render_template("register.html") 
+    session.pop("user", None)
+    return render_template("register.html")
+
 
 @app.route("/userhome")
 def userhome():
     if "user" in session:
         user = session["user"]
         booksn = books.query.all()
-        return render_template("home.html", books = booksn)   
+        return render_template("home.html", books=booksn)
     else:
         flash("Login with the credentails.")
         return render_template("register.html")
 
-@app.route("/review/<ISBN>",methods=["GET", "POST"])
+
+@app.route("/review/<ISBN>", methods=["GET", "POST"])
 def review(ISBN):
-    username  = session["user"] 
+    username = session["user"]
     print(request.form)
     Review = request.form.get("review-text")
     Rating = request.form.get("review-rating")
     time = datetime.now()
     try:
-        addReview= Reviewdata(username = username, ISBN = ISBN,Review = Review,Rating=Rating,time=time)
+        addReview = Reviewdata(username=username, ISBN=ISBN,
+                               Review=Review, Rating=Rating, time=time)
         db.session.add(addReview)
         db.session.commit()
-        return redirect(url_for("book_page",ISBN_number = ISBN))
+        return redirect(url_for("book_page", ISBN_number=ISBN))
     except:
         flash("Something went wrong while adding the review ")
-        return redirect(url_for("book_page",ISBN_number = ISBN))
+        return redirect(url_for("book_page", ISBN_number=ISBN))
+
+
+@app.route("/api/review", methods=["GET", "POST"])
+def review_submit_api():
+    if request.method != "POST":
+        return jsonify({
+            "app": __name__,
+            "msg": "Only POST method allowed."
+        })
+    else:
+        resp = dict()
+        request_data = request.get_json()
+        username = request_data.get("username", None)
+        ISBN = request_data.get("isbn", None)
+        Review = request_data.get("review-text", None)
+        Rating = request_data.get("review-rating", 0)
+        resp["review_data"] = request_data
+        resp["msg"] = None
+        resp["status"] = False
+        time = datetime.now()
+        try:
+            if userdata.query.filter_by(username=username).first() and books.query.filter_by(ISBN_number=ISBN).first():
+                addReview = Reviewdata(username=username, ISBN=ISBN,
+                                       Review=Review, Rating=Rating, time=time)
+                db.session.add(addReview)
+                db.session.commit()
+                resp["msg"] = "review added"
+                resp["status"] = True
+            else:
+                resp["msg"] = "unable to add review"
+                resp["error"] = "isbn or username doesn't exist"
+        except Exception as e:
+            resp["msg"] = "Something went wrong while adding the review"
+            resp["error"] = str(e)
+        return jsonify(resp)
+
 
 @app.route('/book_page/<string:ISBN_number>', methods=["GET"])
 def book_page(ISBN_number):
@@ -129,29 +172,30 @@ def book_page(ISBN_number):
             rev = True
             ISBN = ISBN_number
             reviews = Reviewdata.query.filter(Reviewdata.ISBN == ISBN).all()
-            username  = session["user"] 
-            
-            if Reviewdata.query.filter(and_(Reviewdata.username == username, Reviewdata.ISBN==ISBN)).first():
-                 return render_template("book_page.html" ,submitted = reviews,review =rev,b = b)
+            username = session["user"]
+
+            if Reviewdata.query.filter(and_(Reviewdata.username == username, Reviewdata.ISBN == ISBN)).first():
+                return render_template("book_page.html", submitted=reviews, review=rev, b=b)
             else:
                 rev = False
-                return render_template("book_page.html" ,submitted = reviews,review =rev,b = b)
+                return render_template("book_page.html", submitted=reviews, review=rev, b=b)
 
-@app.route("/search", methods = ["POST"])
+
+@app.route("/search", methods=["POST"])
 def search():
-    tag=request.form.get("search")
+    tag = request.form.get("search")
     tag = string.capwords(tag)
     if tag != "":
-        searchque="%{}%".format(tag)
+        searchque = "%{}%".format(tag)
         ISBN = books.query.filter(books.ISBN_number.like(searchque)).all()
         usname = books.query.filter(books.name.like(searchque)).all()
         authorw = books.query.filter(books.author.like(searchque)).all()
         result = list(set(ISBN + usname + authorw))
         if len(result) == 0:
             flash("The searched book does not exists.")
-            return render_template("home.html", books = [])
+            return render_template("home.html", books=[])
         else:
-            return render_template("home.html", books = result)
+            return render_template("home.html", books=result)
     else:
         flash("Fill the search details before the clicking on search")
         return redirect(url_for("userhome"))

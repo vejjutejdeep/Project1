@@ -1,18 +1,20 @@
-import os
 import datetime
+import os
+import string
+from operator import and_
 
-from flask import Flask, session,render_template, request,flash, redirect, url_for
+from flask import (Flask, flash, redirect, render_template, request, session,url_for, jsonify)
 from flask_session import Session
-from flask_humanize import Humanize
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
-from model import *
-from userdata import *
-from Reviewdata import *
-from operator import and_
-from model import *
-import string
 
+import json
+from flask_humanize import Humanize
+from model import *
+from Reviewdata import *
+from userdata import *
+import search_query
+# from flask.json import jsonify
 
 app = Flask(__name__)
 humanize = Humanize(app)
@@ -147,6 +149,7 @@ def search():
         usname = books.query.filter(books.name.like(searchque)).all()
         authorw = books.query.filter(books.author.like(searchque)).all()
         result = list(set(ISBN + usname + authorw))
+        print(len(result))
         if len(result) == 0:
             flash("The searched book does not exists.")
             return render_template("home.html", books = [])
@@ -155,3 +158,28 @@ def search():
     else:
         flash("Fill the search details before the clicking on search")
         return redirect(url_for("userhome"))
+
+
+@app.route("/api/search", methods = ["POST"])
+def apisearch():
+    try:
+        serach_request = request.get_json()
+        if 'query' in serach_request:
+            # print(serach_request)
+            info = serach_request.get("query")
+            if len(info) == 0:
+                return jsonify({"result":"no such result found"})
+            result = search_query.query(info)
+            dbooks = {"books" : []}
+            print(len(result))
+            for each in result:
+                d  = dict()
+                d["isbn"] = each.ISBN_number
+                d["name"] = each.name
+                d["author"] = each.author
+                d["year"] = each.publication_year
+                dbooks["books"].append(d)
+            return jsonify(dbooks)
+        return  jsonify({"result":"no such result found"}, 400)
+    except:
+        return (jsonify({"Error":"Unexpected failure"}),500)

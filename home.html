@@ -1,0 +1,74 @@
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+        <link rel="stylesheet" href="style.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="homestyle.css">
+    </head>
+    <body>
+        <div class="topnav">
+            <div class="home-container">
+              <form action="{{ url_for('userhome') }}" method="GET">
+                  <a class="active" href="#">Home</a>
+                  <button type="submit"><i class="fa fa-home"></i></button>
+              </form>
+            </div>
+            <a class="logout" href="{{url_for('logout') }}"> logout</a>
+            <div class="search-container">
+              <form action="{{ url_for('search') }}" method="POST">
+                <input type="text" placeholder="Search.." name="search">
+                <button type="submit"><i class="fa fa-search"></i></button>
+              </form>
+            </div>
+          </div>
+        <div>
+           <div class=" rev">
+               <div class="split left">
+                   <div class="centered">
+                   <button type="submit" onclick="Addreview()"> try me!</button>
+                    </div>
+               </div>
+               <div class="split right">
+                   <div class="centered">                <form id="reviewForm" action="{{ url_for('review',ISBN = b.ISBN_number) }}" method="post">
+                    <div class="form-group">
+                        <label for="review-text"><b>Review</b></label>
+                        <textarea class="form-control" name="review-text" id="review-text" rows="3"></textarea>
+                    </div>
+        
+                    <div class="form-check form-check-inline">
+                        <label for="review-rating"><b>Rating</b></label>
+                        <label class="form-check-label rating">
+                            <input type="radio" id="star1" name="review-rating" value="1" /><label class="full" for="star1"
+                                title="Sucks big time - 1 star"></label>
+                            <input type="radio" id="star2" name="review-rating" value="4" /><label class="full" for="star4"
+                                title="Kinda bad - 4 stars"></label>
+                            <input type="radio" id="star3" name="review-rating" value="3" /><label class="full" for="star3"
+                                title="Meh - 3 stars"></label>
+                            <input type="radio" id="star4" name="review-rating" value="2" /><label class="full" for="star2"
+                                title="Pretty good - 4 stars"></label>
+                            <input type="radio" id="star5" name="review-rating" value="5" /><label class="full" for="star5"
+                                title="Awesome - 5 stars"></label>
+                        
+                         </label>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
+            </div>
+
+            </div>
+           
+        </div>
+    </body>
+    <script>
+        function Addreview() {
+          var x = document.getElementById("split right");
+          if (x.display === "none") {
+            x.display = "block";
+          } else {
+            x.display = "none";
+          }
+        }
+    </script>
+</html>

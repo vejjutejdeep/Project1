@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="../static/styles/stylehome.css">
+        <title>Single page good reads</title>
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                console.log("here")
+                document.querySelector("#search_con").onsubmit = () => {
+                    console.log("in function")
+                     document.querySelector("#searchresult").innerHTML = "The result are loading."
+                    const request = new XMLHttpRequest()
+                    const serarch_value =  document.querySelector("#searchvalue").value
+                    console.log(serarch_value)
+                    request.open('POST', "/api/search")
+                    request.setRequestHeader("content-Type", "application/json")
+
+                    request.onload = () => {
+                        const data = JSON.parse(request.responseText)
+                        document.querySelector("#searchresult").innerHTML = ""
+                        
+                        data.books.forEach( function(book) {
+                            document.querySelector('#searchresult').innerHTML += 
+                            ' <div class="card"> <h5 class="card-title">'  + book.name + '</h5> <p class="card-text"> ISBN:' + book.isbn
+                                + ' | Author: ' + book.author + ' </p> <a href="#" class="btn btn-primary">Learnmore</a></div> '
+                        });
+                            
+                    }
+
+                    var query = JSON.stringify({ "query" : serarch_value})
+
+                    request.send(query);
+                    return false;
+                }
+            });
+        </script>
+    </head>
+    <body>
+        <div class="topnav">
+            <div class="home-container">
+            <form action="{{ url_for('home') }}" method='GET'>
+                <a class="active" href="#">Good Reads</a>
+                <button type="submit"><i class="fa fa-home"></i></button>
+            </form>
+            </div>
+            <a class="logout" href="{{url_for('logout') }}"> logout</a>
+            <div class="search-container">
+                <form id="search_con" method="POST">
+                    <input type="text" id ="searchvalue" placeholder="Search.." name="search">
+                    <button type="submit" id="search"><i class="fa fa-search"></i></button>
+                </form>
+            </div>
+        </div>
+        <div>
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    {% for message in messages %}
+                        <p>{{ message }}</p>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+        </div>
+        <div class = "col-sm-6" id="searchresult">
+        </div>
+    </body>
+</html>

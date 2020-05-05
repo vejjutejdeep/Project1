@@ -53,13 +53,13 @@
             document.querySelector('#pass').onchange = () => {
                 console.log(document.querySelector('#pass').value)
                 if (document.querySelector('#pass').value.length < 6) {
-                    console.log("if statement.")
+                    // console.log("if statement.")
                     document.querySelector('#passwordp').innerHTML = "The Length is less than 6."
                     document.querySelector('#register').disabled = true;
                     
                 }
                 else {
-                    console.log("else statement.")
+                    // console.log("else statement.")
                     pwd = document.querySelector('#pass').value
                     var strongRegex = new RegExp("^(?=.[a-z])(?=.[A-Z])(?=.[0-9])(?=.[!@#\$%\^&\*])(?=.{8,})");
                     // val = strongRegex.test(String(pwd))
@@ -67,7 +67,7 @@
                     // console.log(val)
 
                     if (pwd.match(/[A-Z]/) && pwd.match(/[a-z]/) && pwd.match(/[0-9]/) && pwd.match(/[!@#$%^&*()]/) && user){
-                        console.log("passowrd is correct.")
+                        // console.log("passowrd is correct.")
                         document.querySelector('#register').disabled = false;
                     }
                     else{

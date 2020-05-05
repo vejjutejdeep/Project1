@@ -77,7 +77,7 @@ def auth():
         print(password == queryres.password)
         if password == queryres.password and uname == queryres.username:
             session["user"] = uname
-            return redirect(url_for("userhome"))
+            return redirect(url_for("home"))
         else :
             flash("The entered passowrd of the account doesnot match.")
             return render_template("register.html")
@@ -183,3 +183,14 @@ def apisearch():
         return  jsonify({"result":"no such result found"}, 400)
     except:
         return (jsonify({"Error":"Unexpected failure"}),500)
+
+@app.route("/home")
+def home():
+    return render_template("singlehome.html")
+    # if "user" in session:
+    #     user = session["user"]
+    #     booksn = books.query.all()
+    #     return render_template("home.html", books = booksn)   
+    # else:
+    #     flash("Login with the credentails.")
+    #     return render_template("register.html")
